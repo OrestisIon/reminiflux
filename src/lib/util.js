@@ -1,6 +1,48 @@
 import React from 'react'
 import dayjs from 'dayjs'
 
+export function signUpCall(username, email, password, errorHandler) {
+	const token = process.env.REACT_APP_MINIFLUX_API_KEY
+	const server = process.env.REACT_APP_MINIFLUX_API_URL
+	const url = server + '/v1/users'
+	// post request to create a new user
+	const data = {
+		username: username,
+		password: password,
+		is_admin: false,
+	}
+	const options = { headers: { 'X-Auth-Token': token } }
+	options['method'] = 'POST'
+	options['body'] = JSON.stringify(data)
+	const err = (s) => errorHandler(s + ' (' + url + ')')
+
+	return fetch(url, options)
+		.then((response) => response.json())
+		.then((data) => {
+			console.log('Success:', data)
+			return data
+		})
+		.catch((e) => {
+			if (e instanceof TypeError) {
+				err(e.message)
+			} else if (e instanceof Response) {
+				const contentType = e.headers.get('content-type')
+				if (
+					contentType &&
+					contentType.indexOf('application/json') !== -1
+				) {
+					e.json().then((msg) => err(msg['error_message']))
+				} else {
+					e.text().then((msg) => err(msg))
+				}
+			} else {
+				err(String(e))
+			}
+			return Promise.reject()
+		})
+}
+
+
 export function apiCall(s, errorHandler, body = null) {
 	const server = localStorage.getItem('miniflux_server')
 	const token = localStorage.getItem('miniflux_api_key')

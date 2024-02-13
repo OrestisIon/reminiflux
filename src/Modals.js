@@ -177,16 +177,6 @@ export function SettingsModal(props) {
 		<StyledModal isOpen={true} ariaHideApp={false}>
 			<ModalTitle>Reminiflux</ModalTitle>
 			<p>
-				{linkNewTab(
-					'Homepage',
-					'https://github.com/reminiflux/reminiflux'
-				)}
-				<br />
-				Build date:{' '}
-				{dayjs(preval`module.exports = new Date()`).format(
-					'YYYY-MM-DD HH:mm:ss (Z)'
-				)}
-				<br />
 				<button type="button" onClick={configDemo}>Configure demo access</button>
 			</p>
 			<h3>Settings</h3>
